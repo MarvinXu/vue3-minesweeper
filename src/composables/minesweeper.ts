@@ -1,17 +1,11 @@
-interface Cell {
-  id: number
-  mine: boolean
-  flagged: boolean
-  num: number
-}
-export type Board = Cell[][]
+import type { Board, Cell } from '~/types'
 
 // const board = reactive([])
-export function createBoard(w: number, h: number): Board {
-  return Array.from({ length: w }, (_, i) =>
-    Array.from({ length: h }, (_, j) => {
+export function createBoard(cols: number, rows: number): Board {
+  return Array.from({ length: cols }, (_, i) =>
+    Array.from({ length: rows }, (_, j) => {
       const cell: Cell = {
-        id: i * w + j,
+        id: i * rows + j,
         mine: false,
         flagged: false,
         num: 0,
