@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { expandCell } from '~/composables/minesweeper'
 import type { Cell } from '~/types'
 
 const props = defineProps<{ cell: Cell }>()
@@ -20,12 +21,14 @@ const cellClass = computed(() => {
   if (cell.revealed) {
     styles.push('border-gray border-1px')
     if (cell.mine)
-      styles.push('bg-red')
-    if (cell.num > 0)
-      styles.push(numberColors[props.cell.num])
+      styles.push('bg-#c6c6c6', 'text-black')
+    else if (cell.num > 0)
+      styles.push('bg-#c6c6c6', numberColors[props.cell.num])
+    else
+      styles.push('bg-#c6c6c6')
   }
   else {
-    styles.push('border-[calc(var(--sz)/8)] border-t-white border-r-gray border-b-gray border-l-white')
+    styles.push('bg-#c6c6c6', 'border-[calc(var(--sz)/8)] border-t-white border-r-gray border-b-gray border-l-white')
   }
   return styles.join(' ')
 })
@@ -40,8 +43,7 @@ const cellClass = computed(() => {
     cursor="default"
     flex="~ shrink-0"
     justify="center"
-    class="items-center"
-    bg="#c6c6c6"
+    class="items-center active:(border-gray border-1px)"
     :class="cellClass"
   >
     <template v-if="cell.revealed">

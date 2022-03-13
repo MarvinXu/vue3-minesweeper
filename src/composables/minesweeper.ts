@@ -21,7 +21,7 @@ export function createBoard(cols: number, rows: number): Board {
     id: i,
     mine: false,
     flagged: false,
-    revealed: true,
+    revealed: false,
     num: 0,
   }))
   return reactive(board)
@@ -37,9 +37,23 @@ export function generateMines(board: Board, count: number): void {
 export function calculateNums(board: Board, cols: number, rows: number): void {
   board.filter(cell => !cell.mine)
     .forEach((cell) => {
-      const neighbors = getNeighbors(cell.id, cols, rows).map(i => board[i])
+      const neighbors = getNeighborCell(board, cell, cols, rows)
       cell.num = neighbors.filter(ne => ne.mine).length
     })
+}
+
+export function expandCell(board: Board, cell: Cell, cols: number, rows: number): void {
+  if (cell.num === 0) {
+    const neighbors = getNeighborCell(board, cell, cols, rows)
+    neighbors.forEach((cell) => {
+      cell.revealed = true
+      expandCell(board, cell, cols, rows)
+    })
+  }
+}
+
+function getNeighborCell(board: Board, cell: Cell, cols: number, rows: number) {
+  return getNeighbors(cell.id, cols, rows).map(i => board[i])
 }
 
 function getNeighbors(i: number, cols: number, rows: number): number[] {

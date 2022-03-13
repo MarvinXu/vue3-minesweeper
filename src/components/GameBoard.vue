@@ -5,6 +5,7 @@ defineProps<{ board: Board }>()
 <template>
   <div
     border="[calc(var(--sz)/6)] t-white r-gray b-gray l-white"
+    select-none
     h="80%"
   >
     <div border="[calc(var(--sz)/3)] #c6c6c6" h="full">
@@ -21,6 +22,7 @@ defineProps<{ board: Board }>()
             v-for="(cell, i) in board"
             :key="i"
             :cell="cell"
+            @click="$emit('cell-click', cell)"
           />
         </div>
       </div>
