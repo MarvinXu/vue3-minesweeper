@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import type { Board } from '~/types'
-defineProps<{ board: Board }>()
+import { createBoard$ } from '~/composables/minesweeper'
+
+const COLS = 40
+const ROWS = 30
+// TODO: scale
+// const BASE_SIZE = 24
+const board = createBoard$(COLS, ROWS)
 </script>
 <template>
   <div
+    style="--sz: 30px;"
     border="[calc(var(--sz)/6)] t-white r-gray b-gray l-white"
     h="80%"
   >
@@ -14,12 +20,13 @@ defineProps<{ board: Board }>()
         overflow="auto"
       >
         <div
-          flex="~ wrap"
-          w="[calc(var(--sz)*var(--cols))]"
+          v-for="(row, i) in board"
+          :key="i"
+          flex="~"
         >
           <GameCell
-            v-for="(cell, i) in board"
-            :key="i"
+            v-for="cell in row"
+            :key="cell.id"
             :cell="cell"
           />
         </div>

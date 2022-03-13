@@ -5,4 +5,4 @@ export interface Cell {
   revealed: boolean
   num: number
 }
-export type Board = Cell[][]
+export type Board = Cell[]

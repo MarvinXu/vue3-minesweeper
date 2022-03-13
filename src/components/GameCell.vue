@@ -4,36 +4,56 @@ import type { Cell } from '~/types'
 const props = defineProps<{ cell: Cell }>()
 const numberColors = [
   'text-transparent',
-  'text-blue-500',
-  'text-green-500',
-  'text-yellow-500',
-  'text-orange-500',
-  'text-red-500',
-  'text-purple-500',
-  'text-pink-500',
-  'text-teal-500',
+  'text-blue',
+  'text-green',
+  'text-red',
+  'text-darkblue',
+  'text-brown',
+  'text-cyan',
+  'text-black',
+  'text-gray',
 ]
 
 const cellClass = computed(() => {
-  if (props.cell.revealed)
-    return 'border-#808080 border-1px'
-
-  return props.cell.mine
-    ? 'bg-red-500/50'
-    : numberColors[props.cell.num]
+  const { cell } = props
+  const styles = []
+  if (cell.revealed) {
+    styles.push('border-gray border-1px')
+    if (cell.mine)
+      styles.push('bg-red')
+    if (cell.num > 0)
+      styles.push(numberColors[props.cell.num])
+  }
+  else {
+    styles.push('border-[calc(var(--sz)/8)] border-t-white border-r-gray border-b-gray border-l-white')
+  }
+  return styles.join(' ')
 })
 
 </script>
 <template>
   <div
     w="$sz" h="$sz"
-    text="10px"
+    text="xl"
+    font="bold"
     box="border"
-    border="[calc(var(--sz)/8)] t-white r-gray b-gray l-white"
     cursor="default"
-    flex="shrink-0"
+    flex="~ shrink-0"
+    justify="center"
+    class="items-center"
     bg="#c6c6c6"
+    :class="cellClass"
   >
-    {{ cell.id }}
+    <template v-if="cell.revealed">
+      <div v-if="cell.mine" class="i-fa:bomb" />
+      <template v-else-if="cell.num > 0">
+        {{ cell.num }}
+      </template>
+    </template>
+
+    <div v-else-if="cell.flagged" class="i-fa:flag" />
+    <!-- <template v-else>
+      {{ cell.id }}
+    </template> -->
   </div>
 </template>
