@@ -46,8 +46,10 @@ export function expandCell(board: Board, cell: Cell, cols: number, rows: number)
   if (cell.num === 0) {
     const neighbors = getNeighborCell(board, cell, cols, rows)
     neighbors.forEach((cell) => {
-      cell.revealed = true
-      expandCell(board, cell, cols, rows)
+      if (!cell.revealed) {
+        cell.revealed = true
+        expandCell(board, cell, cols, rows)
+      }
     })
   }
 }
