@@ -1,10 +1,12 @@
 import type { Cell, Grid } from '~/types'
+import { GameState } from '~/types'
 
 export class Game {
   cols: number
   rows: number
   mineCount: number
   grid: Grid
+  state = GameState.WAITING
   constructor(cols: number, rows: number, mineCount: number) {
     this.cols = cols
     this.rows = rows
@@ -43,28 +45,76 @@ export class Game {
     this.getAdjacentCells(cell)
       .forEach((c) => {
         if (!c.isOpen) {
-          c.isOpen = true
+          this.tryOpen(c)
           this.expandZero(c)
         }
       })
   }
 
-  stopGame() {}
+  autoExpand(cell: Cell) {
+    if (cell.adjacentMineCount === 0)
+      return
+    const adjacentCells = this.getAdjacentCells(cell)
+    const flaggedCount = adjacentCells.filter(c => c.isFlagged).length
+    if (flaggedCount === cell.adjacentMineCount) {
+      adjacentCells.filter(c => !c.isOpen && !c.isFlagged)
+        .forEach((c) => {
+          this.tryOpen(c)
+        })
+    }
+  }
+
+  stopGame() {
+    // eslint-disable-next-line no-console
+    console.log('game over!')
+    this.state = GameState.LOST
+
+    this.grid.forEach((cell) => {
+      // open all mines
+      if (cell.isMine)
+        this.tryOpen(cell)
+
+      // check all flags
+      if (cell.isFlagged && !cell.isMine)
+        cell.hasFlaggedWrongly = true
+    })
+  }
 
   onClick(cell: Cell) {
+    if (this.isOver())
+      return
+
     if (cell.isOpen) {
       // autoExpand
+      this.autoExpand(cell)
     }
     else {
+      this.tryOpen(cell)
+    }
+  }
+
+  isOver() {
+    return this.state === GameState.LOST || this.state === GameState.WON
+  }
+
+  tryOpen(cell: Cell) {
+    if (!cell.isFlagged) {
+      cell.isOpen = true
       if (cell.isMine) {
-        // stopGame
-        this.stopGame()
+        if (!this.isOver()) {
+          cell.isTrigger = true
+          this.stopGame()
+        }
       }
       else {
-        cell.isOpen = true
         this.expandZero(cell)
       }
     }
+  }
+
+  onRightClick(cell: Cell) {
+    if (!cell.isOpen)
+      cell.isFlagged = !cell.isFlagged
   }
 }
 
@@ -73,7 +123,9 @@ function createGrid(cols: number, rows: number): Grid {
     id: i,
     isMine: false,
     isFlagged: false,
+    hasFlaggedWrongly: false,
     isOpen: false,
+    isTrigger: false,
     adjacentMineCount: 0,
   }))
 }

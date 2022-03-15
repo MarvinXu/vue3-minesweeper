@@ -16,5 +16,9 @@ const game = new Game(COLS, ROWS, 10)
 
 <template>
   <div>Minesweeper</div>
-  <GameBoard ref="el" :grid="game.grid" @cell-click="(cell) => game.onClick(cell)" />
+  <GameBoard
+    ref="el" :grid="game.grid"
+    @cell-click="(cell) => game.onClick(cell)"
+    @cell-right-click="(cell) => game.onRightClick(cell)"
+  />
 </template>

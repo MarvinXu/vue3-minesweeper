@@ -19,16 +19,26 @@ const cellClass = computed(() => {
   const styles = []
   if (cell.isOpen) {
     styles.push('border-gray border-1px')
-    if (cell.isMine)
-      styles.push('bg-#c6c6c6', 'text-black')
-    else if (cell.adjacentMineCount > 0)
-      styles.push('bg-#c6c6c6', numberColors[props.cell.adjacentMineCount])
-    else
-      styles.push('bg-#c6c6c6')
+    if (cell.isMine) {
+      styles.push('text-black')
+      if (cell.isTrigger)
+        styles.push('bg-red')
+      else
+        styles.push('bg-#c6c6c6')
+    }
+
+    else if (cell.adjacentMineCount > 0) { styles.push('bg-#c6c6c6', numberColors[props.cell.adjacentMineCount]) }
+    else { styles.push('bg-#c6c6c6') }
   }
   else {
     styles.push('bg-#c6c6c6', 'border-[calc(var(--sz)/8)] border-t-white border-r-gray border-b-gray border-l-white')
   }
+  if (cell.isFlagged) {
+    styles.push('text-red')
+    if (cell.hasFlaggedWrongly)
+      styles.push('bg-pink')
+  }
+
   return styles.join(' ')
 })
 

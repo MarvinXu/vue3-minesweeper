@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { Cell, Grid } from '~/types'
 defineProps<{ grid: Grid }>()
-defineEmits<{ (e: 'cellClick', cell: Cell): void }>()
+defineEmits<{
+  (e: 'cellClick', cell: Cell): void
+  (e: 'cellRightClick', cell: Cell): void
+}>()
 </script>
 <template>
   <div
@@ -24,6 +27,7 @@ defineEmits<{ (e: 'cellClick', cell: Cell): void }>()
             :key="i"
             :cell="cell"
             @click="$emit('cellClick', cell)"
+            @contextmenu.prevent="$emit('cellRightClick', cell)"
           />
         </div>
       </div>
