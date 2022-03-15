@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Board } from '~/types'
-defineProps<{ board: Board }>()
+import type { Cell, Grid } from '~/types'
+defineProps<{ grid: Grid }>()
+defineEmits<{ (e: 'cellClick', cell: Cell): void }>()
 </script>
 <template>
   <div
@@ -19,10 +20,10 @@ defineProps<{ board: Board }>()
           w="[calc(var(--sz)*var(--cols))]"
         >
           <GameCell
-            v-for="(cell, i) in board"
+            v-for="(cell, i) in grid"
             :key="i"
             :cell="cell"
-            @click="$emit('cell-click', cell)"
+            @click="$emit('cellClick', cell)"
           />
         </div>
       </div>

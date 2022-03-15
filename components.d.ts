@@ -8,9 +8,7 @@ declare module 'vue' {
     CssVar: typeof import('./src/components/CssVar.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     GameBoard: typeof import('./src/components/GameBoard.vue')['default']
-    'GameBoard$': typeof import('./src/components/GameBoard$.vue')['default']
     GameCell: typeof import('./src/components/GameCell.vue')['default']
-    'GameCell$': typeof import('./src/components/GameCell$.vue')['default']
   }
 }
 

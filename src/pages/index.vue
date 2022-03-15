@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { calculateNums, createBoard, expandCell, generateMines } from '~/composables/minesweeper'
-import type { Cell } from '~/types'
+import { Game } from '~/composables/minesweeper'
 
 const COLS = 10
 const ROWS = 10
@@ -10,18 +9,12 @@ const varCols = useCssVar('--cols', el)
 const varSz = useCssVar('--sz', el)
 varCols.value = COLS.toString()
 varSz.value = `${BASE_SIZE}px`
-const board = createBoard(COLS, ROWS)
-generateMines(board, 10)
-calculateNums(board, COLS, ROWS)
 
-function onClick(cell: Cell) {
-  cell.revealed = true
-  if (!cell.mine)
-    expandCell(board, cell, COLS, ROWS)
-}
+const game = new Game(COLS, ROWS, 10)
+
 </script>
 
 <template>
   <div>Minesweeper</div>
-  <GameBoard ref="el" :board="board" @cell-click="onClick" />
+  <GameBoard ref="el" :grid="game.grid" @cell-click="(cell) => game.onClick(cell)" />
 </template>

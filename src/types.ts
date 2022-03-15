@@ -1,8 +1,11 @@
 export interface Cell {
   id: number
-  mine: boolean
-  flagged: boolean
-  revealed: boolean
-  num: number
+  isMine: boolean
+  isFlagged: boolean
+  isOpen: boolean
+  adjacentMineCount: number
 }
-export type Board = Cell[]
+/**
+ * Use flat array as grid, easier to manipulate
+ */
+export type Grid = Cell[]

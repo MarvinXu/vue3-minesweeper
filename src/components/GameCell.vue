@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { expandCell } from '~/composables/minesweeper'
 import type { Cell } from '~/types'
 
 const props = defineProps<{ cell: Cell }>()
@@ -18,12 +17,12 @@ const numberColors = [
 const cellClass = computed(() => {
   const { cell } = props
   const styles = []
-  if (cell.revealed) {
+  if (cell.isOpen) {
     styles.push('border-gray border-1px')
-    if (cell.mine)
+    if (cell.isMine)
       styles.push('bg-#c6c6c6', 'text-black')
-    else if (cell.num > 0)
-      styles.push('bg-#c6c6c6', numberColors[props.cell.num])
+    else if (cell.adjacentMineCount > 0)
+      styles.push('bg-#c6c6c6', numberColors[props.cell.adjacentMineCount])
     else
       styles.push('bg-#c6c6c6')
   }
@@ -46,14 +45,14 @@ const cellClass = computed(() => {
     class="items-center active:(border-gray border-1px)"
     :class="cellClass"
   >
-    <template v-if="cell.revealed">
-      <div v-if="cell.mine" class="i-fa:bomb" />
-      <template v-else-if="cell.num > 0">
-        {{ cell.num }}
+    <template v-if="cell.isOpen">
+      <div v-if="cell.isMine" class="i-fa:bomb" />
+      <template v-else-if="cell.adjacentMineCount > 0">
+        {{ cell.adjacentMineCount }}
       </template>
     </template>
 
-    <div v-else-if="cell.flagged" class="i-fa:flag" />
+    <div v-else-if="cell.isFlagged" class="i-fa:flag" />
     <!-- <template v-else>
       {{ cell.id }}
     </template> -->
