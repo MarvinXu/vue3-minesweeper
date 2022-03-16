@@ -62,9 +62,6 @@ const cellClass = computed(() => {
       </template>
     </template>
 
-    <div v-else-if="cell.isFlagged" class="i-fa:flag" />
-    <!-- <template v-else>
-      {{ cell.id }}
-    </template> -->
+    <div v-else-if="cell.isFlagged" class="h-full w-full" bg="center 120%" />
   </div>
 </template>
