@@ -1,20 +1,6 @@
-export interface Cell {
-  id: number
-  isMine: boolean
-  isFlagged: boolean
-  hasFlaggedWrongly: boolean
-  isOpen: boolean
-  isTrigger: boolean
-  adjacentMineCount: number
-}
+import type { Cell } from '~/composables/minesweeper'
+export type { Cell } from '~/composables/minesweeper'
 /**
  * Use flat array as grid, easier to manipulate
  */
 export type Grid = Cell[]
-
-export enum GameState {
-  WAITING,
-  PLAYING,
-  WON,
-  LOST,
-}

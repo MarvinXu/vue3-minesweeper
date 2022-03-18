@@ -1,5 +1,52 @@
-import type { Cell, Grid } from '~/types'
-import { GameState } from '~/types'
+import type { Grid } from '~/types'
+enum GameState {
+  WAITING,
+  PLAYING,
+  WON,
+  LOST,
+}
+
+export class Cell {
+  readonly id: number
+  isMine!: boolean
+  isFlagged!: boolean
+  /**
+   * update when game over
+   */
+  hasFlaggedWrongly!: boolean
+  isOpen!: boolean
+  isTrigger!: boolean
+  adjacentMineCount!: number
+  constructor(id: number) {
+    this.id = id
+    this.init()
+  }
+
+  init() {
+    this.isMine = false
+    this.isFlagged = false
+    this.hasFlaggedWrongly = false
+    this.isOpen = false
+    this.isTrigger = false
+    this.adjacentMineCount = -1
+  }
+
+  open() {
+    this.isOpen = true
+  }
+
+  toggleFlag() {
+    this.isFlagged = !this.isFlagged
+  }
+
+  trigger() {
+    this.isTrigger = true
+  }
+
+  get isZero() {
+    return this.adjacentMineCount === 0
+  }
+}
 
 export class Game {
   cols: number
@@ -14,6 +61,17 @@ export class Game {
 
     this.grid = reactive(createGrid(cols, rows))
     this.generateMines(this.mineCount)
+  }
+
+  get isGameOver() {
+    return this.state === GameState.LOST || this.state === GameState.WON
+  }
+
+  reset() {
+    this.state = GameState.WAITING
+    this.grid.forEach((cell) => {
+      cell.init()
+    })
   }
 
   generateMines(count: number): void {
@@ -38,29 +96,64 @@ export class Game {
     return getAdjacentIds(cell.id, cols, rows).map(id => grid[id])
   }
 
-  expandZero(cell: Cell): void {
-    if (cell.adjacentMineCount !== 0)
+  onClick(cell: Cell) {
+    if (this.isGameOver || cell.isFlagged)
       return
 
+    if (!cell.isOpen) {
+      cell.open()
+      if (cell.isMine) {
+        cell.trigger()
+        this.stopGame()
+      }
+      else {
+        if (cell.isZero)
+          this.expandZero(cell)
+      }
+    }
+    else {
+      this.autoExpand(cell)
+    }
+  }
+
+  expandZero(cell: Cell): void {
     this.getAdjacentCells(cell)
       .forEach((c) => {
+        // cancel flag when expand zero
+        if (c.isFlagged)
+          c.toggleFlag()
         if (!c.isOpen) {
-          this.tryOpen(c)
-          this.expandZero(c)
+          c.open()
+          if (c.isZero)
+            this.expandZero(c)
         }
       })
   }
 
   autoExpand(cell: Cell) {
-    if (cell.adjacentMineCount === 0)
-      return
     const adjacentCells = this.getAdjacentCells(cell)
     const flaggedCount = adjacentCells.filter(c => c.isFlagged).length
+    const adjacentZeroCells: Cell[] = []
     if (flaggedCount === cell.adjacentMineCount) {
       adjacentCells.filter(c => !c.isOpen && !c.isFlagged)
         .forEach((c) => {
-          this.tryOpen(c)
+          c.open()
+          if (c.isMine) {
+            if (!this.isGameOver) {
+              c.trigger()
+              this.stopGame()
+            }
+          }
+          if (c.isZero)
+            adjacentZeroCells.push(c)
         })
+
+      // only expandZero when finish checking around
+      if (!this.isGameOver) {
+        adjacentZeroCells.forEach((c) => {
+          this.expandZero(c)
+        })
+      }
     }
   }
 
@@ -70,9 +163,9 @@ export class Game {
     this.state = GameState.LOST
 
     this.grid.forEach((cell) => {
-      // open all mines
-      if (cell.isMine)
-        this.tryOpen(cell)
+      // open all mines that are not flagged
+      if (cell.isMine && !cell.isFlagged)
+        cell.open()
 
       // check all flags
       if (cell.isFlagged && !cell.isMine)
@@ -80,54 +173,14 @@ export class Game {
     })
   }
 
-  onClick(cell: Cell) {
-    if (this.isOver())
-      return
-
-    if (cell.isOpen) {
-      // autoExpand
-      this.autoExpand(cell)
-    }
-    else {
-      this.tryOpen(cell)
-    }
-  }
-
-  isOver() {
-    return this.state === GameState.LOST || this.state === GameState.WON
-  }
-
-  tryOpen(cell: Cell) {
-    if (!cell.isFlagged) {
-      cell.isOpen = true
-      if (cell.isMine) {
-        if (!this.isOver()) {
-          cell.isTrigger = true
-          this.stopGame()
-        }
-      }
-      else {
-        this.expandZero(cell)
-      }
-    }
-  }
-
   onRightClick(cell: Cell) {
     if (!cell.isOpen)
-      cell.isFlagged = !cell.isFlagged
+      cell.toggleFlag()
   }
 }
 
 function createGrid(cols: number, rows: number): Grid {
-  return Array.from({ length: cols * rows }, (_, i) => ({
-    id: i,
-    isMine: false,
-    isFlagged: false,
-    hasFlaggedWrongly: false,
-    isOpen: false,
-    isTrigger: false,
-    adjacentMineCount: 0,
-  }))
+  return Array.from({ length: cols * rows }, (_, i) => new Cell(i))
 }
 
 function getAdjacentIds(id: number, cols: number, rows: number) {

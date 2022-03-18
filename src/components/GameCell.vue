@@ -62,6 +62,9 @@ const cellClass = computed(() => {
       </template>
     </template>
 
-    <div v-else-if="cell.isFlagged" class="h-full w-full" bg="center 120%" />
+    <div v-else-if="cell.isFlagged" class="h-full w-full" bg="flag center 120%" />
+    <div v-else>
+      {{ cell.adjacentMineCount }}
+    </div>
   </div>
 </template>
