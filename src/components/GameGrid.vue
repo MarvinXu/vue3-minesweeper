@@ -7,7 +7,6 @@ defineEmits<{
 }>()
 </script>
 <template>
-  <!-- grid border -->
   <div
     border3d-invert-6
     h="full"

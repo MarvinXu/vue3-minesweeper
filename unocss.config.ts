@@ -17,6 +17,17 @@ export default defineConfig({
     [/^border3d-(\d*)$/, ([, c]) => `border-${c} border-t-white border-r-gray border-b-gray border-l-white`],
     [/^border3d-invert-(.*)$/, ([, c]) => `border-${c} border-t-gray border-r-white border-b-white border-l-gray`],
   ],
+  safelist: [
+    'i-carbon-number-1',
+    'i-carbon-number-2',
+    'i-carbon-number-3',
+    'i-carbon-number-4',
+    'i-carbon-number-5',
+    'i-carbon-number-6',
+    'i-carbon-number-7',
+    'i-carbon-number-8',
+    'i-carbon-number-9',
+  ],
   theme: {
     colors: {
       blue: '#0000ff',

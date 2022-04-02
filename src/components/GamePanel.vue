@@ -15,9 +15,13 @@
         w="11"
         h="11"
         border3d-4
-        text="xl"
+        active:border3d-invert-4
+        flex items-center justify-center
+        text="3xl"
       >
-        <span i-carbon:face-satisfied />
+        <!-- <div i-openmoji:slightly-smiling-face /> -->
+        <div i-openmoji:face-with-crossed-out-eyes />
+        <!-- <div i-openmoji:smiling-face-with-sunglasses /> -->
       </div>
       <digit-display :num="0" />
     </div>

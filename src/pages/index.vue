@@ -2,7 +2,7 @@
 import { Game } from '~/composables/minesweeper'
 
 const COLS = 20
-const ROWS = 30
+const ROWS = 20
 const BASE_SIZE = 2
 const el = ref(null)
 const varCols = useCssVar('--cols', el)
@@ -12,7 +12,7 @@ varCols.value = COLS.toString()
 varSz.value = `${BASE_SIZE}rem`
 varGridW.value = 'calc(var(--sz)*var(--cols))'
 // style="--cols: 4;--sz: 30px;--gridW: calc(var(--sz)*var(--cols))"
-const game = new Game(COLS, ROWS, 10)
+const game = new Game(COLS, ROWS, 100)
 
 </script>
 

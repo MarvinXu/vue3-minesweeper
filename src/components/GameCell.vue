@@ -27,8 +27,12 @@ const cellClass = computed(() => {
         styles.push('bg-#c6c6c6')
     }
 
-    else if (cell.adjacentMineCount > 0) { styles.push('bg-#c6c6c6', numberColors[props.cell.adjacentMineCount]) }
-    else { styles.push('bg-#c6c6c6') }
+    else if (cell.adjacentMineCount > 0) {
+      styles.push('bg-#c6c6c6', numberColors[props.cell.adjacentMineCount])
+    }
+    else {
+      styles.push('bg-#c6c6c6')
+    }
   }
   else {
     styles.push('bg-#c6c6c6', 'border-[calc(var(--sz)/7.5)] border-t-white border-r-gray border-b-gray border-l-white')
@@ -56,15 +60,16 @@ const cellClass = computed(() => {
     :class="cellClass"
   >
     <template v-if="cell.isOpen">
-      <div v-if="cell.isMine" class="i-carbon:uv-index-filled" />
-      <template v-else-if="cell.adjacentMineCount > 0">
-        {{ cell.adjacentMineCount }}
-      </template>
+      <div v-if="cell.isMine" i-carbon:uv-index-filled />
+      <div
+        v-else-if="cell.adjacentMineCount > 0"
+        :class="`i-carbon-number-${cell.adjacentMineCount}`"
+      />
     </template>
 
     <div v-else-if="cell.isFlagged" class="h-full w-full" bg="flag center 120%" />
-    <div v-else>
+    <!-- <div v-else>
       {{ cell.adjacentMineCount }}
-    </div>
+    </div> -->
   </div>
 </template>
