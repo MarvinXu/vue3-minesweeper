@@ -31,7 +31,7 @@ const cellClass = computed(() => {
     else { styles.push('bg-#c6c6c6') }
   }
   else {
-    styles.push('bg-#c6c6c6', 'border-[calc(var(--sz)/8)] border-t-white border-r-gray border-b-gray border-l-white')
+    styles.push('bg-#c6c6c6', 'border-[calc(var(--sz)/7.5)] border-t-white border-r-gray border-b-gray border-l-white')
   }
   if (cell.isFlagged) {
     styles.push('text-red')
@@ -56,7 +56,7 @@ const cellClass = computed(() => {
     :class="cellClass"
   >
     <template v-if="cell.isOpen">
-      <div v-if="cell.isMine" class="i-fa:bomb" />
+      <div v-if="cell.isMine" class="i-carbon:uv-index-filled" />
       <template v-else-if="cell.adjacentMineCount > 0">
         {{ cell.adjacentMineCount }}
       </template>

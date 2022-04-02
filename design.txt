@@ -1,0 +1,23 @@
+mimesweeper.online
+
+zoom:30
+
+board:
+  border: 6px
+
+panel:
+  height: 60px
+  padding: 8px
+  border: 6px
+  margin-x: 12px
+  margin-y: 10px
+
+grid:
+  border: 6px
+
+cell:
+  width: 30px
+  border: 4px
+
+smile button:
+  border: 8px
