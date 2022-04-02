@@ -8,9 +8,10 @@ defineEmits<{
 </script>
 <template>
   <div
+    max-h="80%"
+    m-x-auto
     border="[calc(var(--sz)/6)] t-white r-gray b-gray l-white"
     select-none
-    h="80%"
   >
     <div border="[calc(var(--sz)/3)] #c6c6c6" h="full">
       <div
@@ -18,9 +19,10 @@ defineEmits<{
         h="full"
         overflow="auto"
       >
+        <!-- wrapper for cells, fixed width -->
         <div
           flex="~ wrap"
-          w="[calc(var(--sz)*var(--cols))]"
+          w="$gridW"
         >
           <GameCell
             v-for="(cell, i) in grid"

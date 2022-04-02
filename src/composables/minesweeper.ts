@@ -72,6 +72,7 @@ export class Game {
     this.grid.forEach((cell) => {
       cell.init()
     })
+    this.generateMines(this.mineCount)
   }
 
   generateMines(count: number): void {
