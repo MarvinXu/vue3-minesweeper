@@ -46,6 +46,16 @@ export default defineConfig({
     presetIcons({
       scale: 1.2,
       warn: true,
+      customizations: {
+        iconCustomizer(collection, icon, props) {
+          // customize this @iconify icon in this collection
+          if (collection === 'carbon' && icon.startsWith('number-')) {
+            // props.width = '4em'
+            // props.height = '4em'
+            props.viewBox = '6 6 20 20'
+          }
+        },
+      },
     }),
     presetWebFonts({
       fonts: {

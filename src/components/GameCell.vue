@@ -64,6 +64,8 @@ const cellClass = computed(() => {
       <div
         v-else-if="cell.adjacentMineCount > 0"
         :class="`i-carbon-number-${cell.adjacentMineCount}`"
+        w-full
+        h-full
       />
     </template>
 
