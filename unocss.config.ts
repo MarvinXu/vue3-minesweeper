@@ -18,15 +18,10 @@ export default defineConfig({
     [/^border3d-invert-(.*)$/, ([, c]) => `border-${c} border-t-gray border-r-white border-b-white border-l-gray`],
   ],
   safelist: [
-    'i-carbon-number-1',
-    'i-carbon-number-2',
-    'i-carbon-number-3',
-    'i-carbon-number-4',
-    'i-carbon-number-5',
-    'i-carbon-number-6',
-    'i-carbon-number-7',
-    'i-carbon-number-8',
-    'i-carbon-number-9',
+    // i-carbon-number from 1 to 9
+    ...Array.from({ length: 9 }, (_, i) => `i-carbon-number-${i + 1}`),
+    // i-fad:digital from 0 to 9
+    ...Array.from({ length: 10 }, (_, i) => `i-fad:digital${i}`),
   ],
   theme: {
     colors: {
@@ -52,7 +47,7 @@ export default defineConfig({
           if (collection === 'carbon' && icon.startsWith('number-')) {
             // props.width = '4em'
             // props.height = '4em'
-            props.viewBox = '6 6 20 20'
+            props.viewBox = '5 5 22 22'
           }
         },
       },

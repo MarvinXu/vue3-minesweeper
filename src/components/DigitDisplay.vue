@@ -14,6 +14,20 @@ const padded = computed(() => {
     flex="~"
     items-center
   >
-    {{ padded }}
+    <div
+      v-for="(c, i) in padded"
+      :key="i"
+      :class="`i-fad:digital${c} digit`"
+      h-full
+      w-6
+    />
   </div>
 </template>
+<style scoped>
+.digit{
+  mask-size: 180% 180%;
+  mask-position: center;
+  -webkit-mask-size: 180% 180%;
+  -webkit-mask-position: center;
+}
+</style>

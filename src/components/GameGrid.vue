@@ -9,7 +9,7 @@ defineEmits<{
 <template>
   <div
     border3d-invert-6
-    h="full"
+    flex="1"
     overflow="auto"
     m="b-2.5"
   >

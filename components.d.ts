@@ -10,6 +10,8 @@ declare module 'vue' {
     GameCell: typeof import('./src/components/GameCell.vue')['default']
     GameGrid: typeof import('./src/components/GameGrid.vue')['default']
     GamePanel: typeof import('./src/components/GamePanel.vue')['default']
+    GamePanelBottom: typeof import('./src/components/GamePanelBottom.vue')['default']
+    GamePanelTop: typeof import('./src/components/GamePanelTop.vue')['default']
   }
 }
 

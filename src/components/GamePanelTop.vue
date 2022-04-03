@@ -23,7 +23,7 @@
         <div i-openmoji:face-with-crossed-out-eyes />
         <!-- <div i-openmoji:smiling-face-with-sunglasses /> -->
       </div>
-      <digit-display :num="0" />
+      <digit-display :num="999" />
     </div>
   </div>
 </template>
