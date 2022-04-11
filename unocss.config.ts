@@ -9,17 +9,19 @@ import {
 } from 'unocss'
 
 export default defineConfig({
+  // include: [/\.[jt]sx?$/],
   rules: [
     ['bg-flag', { 'background-image': 'url(~/assets/flag.svg)' }],
     ['bg-120%', { 'background-size': '120%' }],
+    ['border-outset', { 'border-style': 'outset' }],
   ],
   shortcuts: [
-    [/^border3d-(\d*)$/, ([, c]) => `border-${c} border-t-white border-r-gray border-b-gray border-l-white`],
-    [/^border3d-invert-(.*)$/, ([, c]) => `border-${c} border-t-gray border-r-white border-b-white border-l-gray`],
+    { border3d: 'border-t-white border-r-gray border-b-gray border-l-white' },
+    { 'border3d-invert': 'border-t-gray border-r-white border-b-white border-l-gray' },
   ],
   safelist: [
     // i-carbon-number from 1 to 9
-    ...Array.from({ length: 9 }, (_, i) => `i-carbon-number-${i + 1}`),
+    ...Array.from({ length: 8 }, (_, i) => `i-carbon-number-${i + 1}`),
     // i-fad:digital from 0 to 9
     ...Array.from({ length: 10 }, (_, i) => `i-fad:digital${i}`),
   ],

@@ -8,7 +8,7 @@ const [flagMode, toggle] = useToggle(false)
       w10
       h10
       flex items-center justify-center
-      border3d-2
+      border3d border-2
       @click="toggle()"
     >
       <div

@@ -9,7 +9,7 @@ const padded = computed(() => {
 <template>
   <div
     bg="black"
-    border3d-invert-2
+    border3d-invert border-2
     text="red 4xl"
     flex="~"
     items-center

@@ -21,7 +21,7 @@ const game = new Game(COLS, ROWS, 10)
   <div
     w-full
     h-full
-    border3d-6
+    border3d border-6
     select-none
   >
     <!-- container -->
