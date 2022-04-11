@@ -8,8 +8,9 @@ declare module 'vue' {
     CssVar: typeof import('./src/components/CssVar.vue')['default']
     DigitDisplay: typeof import('./src/components/DigitDisplay.vue')['default']
     GameCell: typeof import('./src/components/GameCell.vue')['default']
+    GameCellNew: typeof import('./src/components/GameCellNew.vue')['default']
     GameGrid: typeof import('./src/components/GameGrid.vue')['default']
-    GamePanel: typeof import('./src/components/GamePanel.vue')['default']
+    GameGridNew: typeof import('./src/components/GameGridNew.vue')['default']
     GamePanelBottom: typeof import('./src/components/GamePanelBottom.vue')['default']
     GamePanelTop: typeof import('./src/components/GamePanelTop.vue')['default']
   }
