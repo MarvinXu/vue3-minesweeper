@@ -1,5 +1,5 @@
 import { useMineSweeper } from '~/composables'
-const { grid, handleLeftClick, handleRightClick, reset, el } = useMineSweeper()
+const { grid, handleLeftClick, handleRightClick, reset, el, getMouseHandlers } = useMineSweeper()
 
 export {
   grid,
@@ -7,4 +7,5 @@ export {
   handleRightClick,
   el,
   reset,
+  getMouseHandlers,
 }

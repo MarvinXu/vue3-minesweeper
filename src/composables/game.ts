@@ -1,3 +1,5 @@
+import type { PressedOptions } from './useMousePressedHover'
+
 export enum GameState {
   WAITING,
   PLAYING,
@@ -9,6 +11,7 @@ export enum GameState {
 // closed-empty
 // closed-flag
 // closed-flag-wrong
+// half-opened
 // opened-empty
 // opened-number
 // opened-mine
@@ -17,6 +20,7 @@ export enum CellState {
   CLOSED_EMPTY,
   CLOSED_FLAG,
   CLOSED_FLAG_WRONG,
+  HALF_OPENED,
   OPENED_EMPTY,
   OPENED_NUMBER,
   OPENED_MINE,
@@ -113,10 +117,6 @@ export function useMineSweeper() {
     }
   }
 
-  function handleMouseDown(cell: Cell) {
-    if (isGameOver || isFlagged(cell)) return
-  }
-
   function handleRightClick(cell: Cell) {
     if (isGameOver) return
     toggleFlag(cell)
@@ -161,12 +161,84 @@ export function useMineSweeper() {
     generateMines()
   }
 
+  function getMouseHandlers(cell: Cell): PressedOptions {
+    // set active state when press enter
+    function onPressedEnter() {
+      if (isGameOver || isFlagged(cell))
+        return
+      if (!isOpen(cell)) {
+        cell.state = CellState.HALF_OPENED
+      }
+      else {
+        getAdjacentCells(cell).forEach((c) => {
+          if (!isOpen(c) && !isFlagged(c))
+            c.state = CellState.HALF_OPENED
+        })
+      }
+    }
+    // unset active state when press leave
+    function onPressedLeave() {
+      if (isGameOver || isFlagged(cell))
+        return
+      if (!isOpen(cell)) {
+        cell.state = CellState.CLOSED_EMPTY
+      }
+      else {
+        getAdjacentCells(cell).forEach((c) => {
+          if (!isOpen(c) && !isFlagged(c))
+            c.state = CellState.CLOSED_EMPTY
+        })
+      }
+    }
+    // unset active state and trigger click
+    function onMouseUp() {
+      if (isGameOver || isFlagged(cell))
+        return
+      if (!isOpen(cell)) {
+        openCell(cell)
+        if (cell.adjacentMineCount === 0)
+          openAdjacentCells(cell)
+      }
+
+      else {
+        // auto expand when ajacent flags equals mine count
+        const adjacents = getAdjacentCells(cell)
+        const adjacentZeroCells: Cell[] = []
+        if (adjacents.filter(c => isFlagged(c)).length === cell.adjacentMineCount) {
+          adjacents.forEach((c) => {
+            if (!isGameOver && !isFlagged(c))
+              openCell(c)
+
+            if (c.adjacentMineCount === 0)
+              adjacentZeroCells.push(c)
+          })
+          // open adjacent zero cells
+          adjacentZeroCells.forEach((c) => {
+            openAdjacentCells(c)
+          })
+        }
+        else {
+          adjacents.forEach((c) => {
+            if (!isOpen(c) && !isFlagged(c))
+              c.state = CellState.CLOSED_EMPTY
+          })
+        }
+      }
+    }
+    return {
+      onPressedEnter,
+      onPressedLeave,
+      onMouseUp,
+    }
+  }
+
   return {
     grid,
     handleLeftClick,
     handleRightClick,
     el,
     reset,
+    getMouseHandlers,
   }
 }
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Cell } from '~/composables'
 import { CellState } from '~/composables'
-import { handleLeftClick, handleRightClick } from '~/store'
+import { useMousePressedHover } from '~/composables/useMousePressedHover'
+import { getMouseHandlers, handleRightClick } from '~/store'
 
 function getCellClass(cell: Cell) {
   const classClosed = 'border3d border-[calc(var(--sz)/7.5)]'
@@ -24,6 +25,7 @@ function getCellClass(cell: Cell) {
     [CellState.CLOSED_EMPTY]: classClosed,
     [CellState.CLOSED_FLAG]: `${classClosed} ${classDefaultBg}`,
     [CellState.CLOSED_FLAG_WRONG]: `${classClosed} bg-pink`,
+    [CellState.HALF_OPENED]: `${classOpend} ${classDefaultBg}`,
     [CellState.OPENED_MINE]: `${classOpend} ${classDefaultBg}`,
     [CellState.OPENED_MINE_HIT]: `${classOpend} bg-red`,
     [CellState.OPENED_NUMBER]: `${classOpend} ${numberColors[num - 1]}`,
@@ -52,9 +54,13 @@ function getCellInnerClass(cell: Cell) {
 const props = defineProps<{ cell: Cell }>()
 const cellClass = computed(() => getCellClass(props.cell))
 const innerClass = computed(() => getCellInnerClass(props.cell))
+
+const cellRef = ref(null)
+useMousePressedHover(cellRef, getMouseHandlers(props.cell))
 </script>
 <template>
   <div
+    ref="cellRef"
     w="$sz" h="$sz"
     text="xl"
     font="bold"
@@ -62,9 +68,8 @@ const innerClass = computed(() => getCellInnerClass(props.cell))
     cursor="default"
     flex="~ shrink-0"
     justify="center"
-    class="items-center active:(border-gray border-1px)"
+    class="items-center"
     :class="cellClass"
-    @click="handleLeftClick(cell)"
     @contextmenu.prevent="handleRightClick(cell)"
   >
     <div :class="innerClass" />
