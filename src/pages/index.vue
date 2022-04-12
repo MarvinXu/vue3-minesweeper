@@ -1,21 +1,6 @@
 <script setup lang="ts">
-import { Game } from '~/composables/minesweeper'
-
-const COLS = 9
-const ROWS = 9
-const BASE_SIZE = 2
-const el = ref(null)
-const varCols = useCssVar('--cols', el)
-const varSz = useCssVar('--sz', el)
-const varGridW = useCssVar('--gridW', el)
-varCols.value = COLS.toString()
-varSz.value = `${BASE_SIZE}rem`
-varGridW.value = 'calc(var(--sz)*var(--cols))'
-// style="--cols: 4;--sz: 30px;--gridW: calc(var(--sz)*var(--cols))"
-const game = new Game(COLS, ROWS, 10)
-
+import { el, grid } from '~/store'
 </script>
-
 <template>
   <!-- border -->
   <div
@@ -32,11 +17,9 @@ const game = new Game(COLS, ROWS, 10)
       p="x-3 y-2.5"
     >
       <game-panel-top />
-      <game-grid
+      <game-grid-new
         ref="el"
-        :grid="game.grid"
-        @cell-click="(cell) => game.onClick(cell)"
-        @cell-right-click="(cell) => game.onRightClick(cell)"
+        :grid="grid"
       />
       <game-panel-bottom />
     </div>

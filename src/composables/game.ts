@@ -46,7 +46,9 @@ export function useMineSweeper() {
   const state = ref(GameState.WAITING)
   const cols = ref(10)
   const rows = ref(10)
-  const mineCount = ref(10)
+  const mineCount = ref(5)
+  const timeElapsed = ref(0)
+  let timer = 0
 
   // cell UI size
   const BASE_SIZE = 2
@@ -68,6 +70,18 @@ export function useMineSweeper() {
 
   generateMines()
 
+  const minesLeft = computed(() => {
+    return mineCount.value - grid.filter(cell => isFlagged(cell)).length
+  })
+
+  function startGame() {
+    state.value = GameState.PLAYING
+    timeElapsed.value = 0
+    timer = window.setInterval(() => {
+      timeElapsed.value++
+    }, 1000)
+  }
+
   function generateMines(): void {
     const randomIndices = shuffle(grid.map((v, i) => i))
     randomIndices.slice(0, mineCount.value).forEach((i) => {
@@ -88,60 +102,50 @@ export function useMineSweeper() {
     return getAdjacentIds(cell.id, cols.value, rows.value).map(id => grid[id])
   }
 
-  function handleLeftClick(cell: Cell) {
-    if (isGameOver || isFlagged(cell))
-      return
-    if (!isOpen(cell)) {
-      openCell(cell)
-      if (cell.adjacentMineCount === 0)
-        openAdjacentCells(cell)
-    }
-
-    else {
-      // auto expand when ajacent flags equals mine count
-      const adjacents = getAdjacentCells(cell)
-      const adjacentZeroCells: Cell[] = []
-      if (adjacents.filter(c => isFlagged(c)).length === cell.adjacentMineCount) {
-        adjacents.forEach((c) => {
-          if (!isGameOver && !isFlagged(c))
-            openCell(c)
-
-          if (c.adjacentMineCount === 0)
-            adjacentZeroCells.push(c)
-        })
-        // open adjacent zero cells
-        adjacentZeroCells.forEach((c) => {
-          openAdjacentCells(c)
-        })
-      }
-    }
-  }
-
   function handleRightClick(cell: Cell) {
     if (isGameOver) return
     toggleFlag(cell)
   }
 
-  function openAdjacentCells(cell: Cell) {
+  function toggleFlag(cell: Cell) {
+    if (isOpen(cell))
+      return
+    if (isFlagged(cell)) {
+      cell.state = CellState.CLOSED_EMPTY
+    }
+    else {
+      cell.state = CellState.CLOSED_FLAG
+      checkWinning()
+    }
+  }
+
+  function expandZero(cell: Cell) {
     getAdjacentCells(cell).forEach((c) => {
       if (!isOpen(c)) {
         openCell(c)
         if (c.adjacentMineCount === 0)
-          openAdjacentCells(c)
+          expandZero(c)
       }
     })
   }
 
   function openCell(cell: Cell) {
+    if (state.value === GameState.WAITING)
+      startGame()
+
     if (cell.isMine) {
       cell.state = isGameOver ? CellState.OPENED_MINE : CellState.OPENED_MINE_HIT
       failGame()
     }
     else { cell.state = CellState.OPENED_NUMBER }
+
+    checkWinning()
   }
 
   function failGame() {
     state.value = GameState.LOST
+    clearInterval(timer)
+
     grid.forEach((cell) => {
       // open all mines that are not opened nor flagged
       if (cell.isMine && !isOpen(cell) && !isFlagged(cell))
@@ -155,10 +159,29 @@ export function useMineSweeper() {
 
   function reset() {
     state.value = GameState.WAITING
+    clearInterval(timer)
+    timeElapsed.value = 0
     grid.forEach((cell) => {
       Object.assign(cell, cellDefaults)
     })
     generateMines()
+  }
+
+  function checkWinning() {
+    // all cells left are mines
+    const notOpenedCells = grid.filter(cell => !isOpen(cell))
+    if (notOpenedCells.every(cell => cell.isMine)) {
+      // flag all mines
+      notOpenedCells.forEach((c) => {
+        c.state = CellState.CLOSED_FLAG
+      })
+      winGame()
+    }
+  }
+
+  function winGame() {
+    state.value = GameState.WON
+    clearInterval(timer)
   }
 
   function getMouseHandlers(cell: Cell): PressedOptions {
@@ -197,7 +220,7 @@ export function useMineSweeper() {
       if (!isOpen(cell)) {
         openCell(cell)
         if (cell.adjacentMineCount === 0)
-          openAdjacentCells(cell)
+          expandZero(cell)
       }
 
       else {
@@ -214,7 +237,7 @@ export function useMineSweeper() {
           })
           // open adjacent zero cells
           adjacentZeroCells.forEach((c) => {
-            openAdjacentCells(c)
+            expandZero(c)
           })
         }
         else {
@@ -233,15 +256,18 @@ export function useMineSweeper() {
   }
 
   return {
+    state,
     grid,
-    handleLeftClick,
     handleRightClick,
     el,
     reset,
     getMouseHandlers,
+    minesLeft,
+    timeElapsed,
   }
 }
 
+// -----------------------------------------------------------------------------
 function getAdjacentIds(id: number, cols: number, rows: number) {
   const cords = idToCoordinates(id, cols)
   return getAdjacentCoordinates(cords, cols, rows).map(([x, y]) => y * cols + x)
@@ -302,13 +328,4 @@ function isOpen(cell: Cell) {
 
 function isFlagged(cell: Cell) {
   return cell.state === CellState.CLOSED_FLAG || cell.state === CellState.CLOSED_FLAG_WRONG
-}
-
-function toggleFlag(cell: Cell) {
-  if (isOpen(cell))
-    return
-  if (isFlagged(cell))
-    cell.state = CellState.CLOSED_EMPTY
-  else
-    cell.state = CellState.CLOSED_FLAG
 }

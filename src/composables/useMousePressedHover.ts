@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 
 const pressed = ref(false)
+let hasWindowListener = false
 
 export interface PressedOptions {
   onPressedEnter?: () => void
@@ -10,10 +11,13 @@ export interface PressedOptions {
 
 export function useMousePressedHover(el: Ref<HTMLElement | null>, options: PressedOptions) {
   const { onPressedEnter, onPressedLeave, onMouseUp } = options
-  useEventListener('mouseup', (e) => {
-    if (e.button === 0)
-      pressed.value = false
-  })
+  if (!hasWindowListener) {
+    useEventListener('mouseup', (e) => {
+      if (e.button === 0)
+        pressed.value = false
+    })
+    hasWindowListener = true
+  }
   useEventListener(el, 'mousedown', (e: MouseEvent) => {
     if (e.button === 0) {
       pressed.value = true

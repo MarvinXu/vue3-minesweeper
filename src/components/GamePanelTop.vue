@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { reset } from '~/store'
+import { GameState } from '~/composables'
+import { minesLeft, reset, state, timeElapsed } from '~/store'
+const icon = computed(() => {
+  const map: Record<number, string> = {
+    [GameState.WAITING]: 'i-openmoji:slightly-smiling-face',
+    [GameState.PLAYING]: 'i-openmoji:slightly-smiling-face',
+    [GameState.LOST]: 'i-openmoji:face-with-crossed-out-eyes',
+    [GameState.WON]: 'i-openmoji:smiling-face-with-sunglasses',
+  }
+
+  return map[state.value]
+})
 </script>
 <template>
   <div
@@ -12,7 +23,7 @@ import { reset } from '~/store'
       h="15"
       p="2"
     >
-      <digit-display :num="40" />
+      <digit-display :num="minesLeft" />
       <!-- reset button -->
       <div
         w="11"
@@ -23,11 +34,9 @@ import { reset } from '~/store'
         text="3xl"
         @click="reset"
       >
-        <!-- <div i-openmoji:slightly-smiling-face /> -->
-        <div i-openmoji:face-with-crossed-out-eyes />
-        <!-- <div i-openmoji:smiling-face-with-sunglasses /> -->
+        <div :class="[icon]" />
       </div>
-      <digit-display :num="999" />
+      <digit-display :num="timeElapsed" />
     </div>
   </div>
 </template>

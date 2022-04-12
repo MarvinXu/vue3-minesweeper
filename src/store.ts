@@ -1,11 +1,22 @@
 import { useMineSweeper } from '~/composables'
-const { grid, handleLeftClick, handleRightClick, reset, el, getMouseHandlers } = useMineSweeper()
+const {
+  state,
+  grid,
+  handleRightClick,
+  reset,
+  el,
+  getMouseHandlers,
+  minesLeft,
+  timeElapsed,
+} = useMineSweeper()
 
 export {
+  state,
   grid,
-  handleLeftClick,
   handleRightClick,
   el,
   reset,
   getMouseHandlers,
+  minesLeft,
+  timeElapsed,
 }
